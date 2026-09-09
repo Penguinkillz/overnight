@@ -27,15 +27,6 @@ Get-ChildItem -LiteralPath $Root -Recurse -File | Where-Object {
   $okExt -and -not $skip
 } | ForEach-Object { Convert-WideFile $_ }
 
-$docs = Join-Path $Root 'docs'
-New-Item -ItemType Directory -Force -Path $docs | Out-Null
-$home = $env:USERPROFILE
-$t1 = Join-Path $home '.cursor\projects\c-Users-ASUS-Projects-overnight\assets\devpost-thumbnail.png'
-$t2 = Join-Path $home '.cursor\projects\c-Users-ASUS-Projects-overnight\assets\overnight-thumbnail.png'
-$dest = Join-Path $docs 'devpost-thumbnail.png'
-if (Test-Path -LiteralPath $t1) { Copy-Item -LiteralPath $t1 -Destination $dest -Force; Write-Host 'copied thumbnail' }
-elseif (Test-Path -LiteralPath $t2) { Copy-Item -LiteralPath $t2 -Destination $dest -Force; Write-Host 'copied thumbnail' }
-
 $venvPy = Join-Path $Root '.venv\Scripts\python.exe'
 if (-not (Test-Path -LiteralPath $venvPy)) {
   python -m venv .venv

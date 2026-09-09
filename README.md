@@ -4,9 +4,9 @@
 
 A production-office agent for the Google Cloud **Agentic Cinema** hackathon. **Track: Parallel.**
 
-Overnight is a web app a coordinator can actually sit down with at 11pm. You load tomorrow's call sheet. A Gemini agent (Google ADK) runs live Parallel Search queries — location, talent/news, competing productions, music cues — then writes a one-page desk brief: **proceed**, **watch**, or **ask legal**, with sources. The UI is a call sheet in, a stamped packet out. Not a chatbot with a film sticker on it.
+Overnight is a desk a coordinator can use the night before a shoot. You load tomorrow's call sheet. A Gemini agent (Google ADK) runs live Parallel Search queries — location, talent and news, competing productions, and music cues — then writes a one-page brief: **proceed**, **watch**, or **ask legal**, with sources.
 
-![Overnight desk](docs/devpost-thumbnail.png)
+![Overnight desk](frontend/public/desk.png)
 
 ## The job
 
@@ -25,11 +25,11 @@ Overnight is that night desk.
 
 Sample production is fictional. The location is real on purpose, so Parallel hits live pages instead of a fake database.
 
-## Runtime proof (this is what Stage One checks)
+## Runtime integrations
 
-Partner and Google Cloud usage is **imported and called**, not named in this README.
+Google Cloud and Parallel are imported and called when a brief is generated.
 
-| Requirement | Where it actually runs |
+| Integration | Where it runs |
 | --- | --- |
 | Google ADK agent + runner | [`app/agent.py`](app/agent.py) (`google.adk.agents.llm_agent.Agent`, `InMemoryRunner`) |
 | Gemini / `google-genai` | [`app/agent.py`](app/agent.py) (user turn + fallback generate_content) |
@@ -60,51 +60,40 @@ Frontend: React, Vite, Tailwind. [Anime.js](https://animejs.com/) for the masthe
 
 Python 3.11+ and Node 20+.
 
-```powershell
-cd C:\Users\ASUS\Projects\overnight
-copy .env.example .env
-# put GOOGLE_API_KEY and PARALLEL_API_KEY in .env, then:
-cmd /c run.cmd
+```bash
+cp .env.example .env
 ```
 
-`bootstrap.ps1` rewrites source files to UTF-8 (pip cannot read UTF-16), installs Python + Node deps, then starts:
+Set `GOOGLE_API_KEY` and `PARALLEL_API_KEY`. Keys: [Google AI Studio](https://aistudio.google.com/apikey) and [Parallel](https://platform.parallel.ai). Do not commit `.env`.
 
-- API: http://127.0.0.1:8080
-- UI:  http://127.0.0.1:5173  **open this one**
-
-Keys: [Google AI Studio](https://aistudio.google.com/apikey) and [Parallel platform](https://platform.parallel.ai). Never commit `.env`.
-
-Manual (if you already ran the encoding fix):
-
-```powershell
-.\.venv\Scripts\Activate.ps1
+```bash
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8080
 ```
 
-```powershell
+```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-## Hosting
+Open http://127.0.0.1:5173. The UI proxies `/api` to port 8080.
 
-The hackathon needs a public URL of the **running agent**, not a static page.
+On Windows, `run.cmd` starts both processes.
 
-**Do not use Vercel for the demo.** Overnight is FastAPI + a 30-60s Gemini/Parallel loop. Vercel Hobby functions time out around 10 seconds. A Vercel frontend with a dead API will fail judging.
+## Deploy
 
-Railway trial expired: skip it.
+The API can take 30–60 seconds because it runs several live searches. Deploy the Docker image (`Dockerfile`) as a long-running web service on Render or Google Cloud Run.
 
-**Use Render (free, connects to GitHub):** [render.com](https://render.com) → New Web Service → this repo → Docker (`Dockerfile`). Add `GOOGLE_API_KEY` and `PARALLEL_API_KEY`. That URL is the Devpost "Try it out" link.
+Required environment variables:
 
-Backup: **Google Cloud Run** with the same Docker image. Fits the Google Cloud story if Render waitlists you.
+- `GOOGLE_API_KEY`
+- `PARALLEL_API_KEY`
+- `GEMINI_MODEL` (optional; defaults to `gemini-3.6-flash`)
 
-## What we learned
-
-- One giant "search the web" prompt lies. The desk needs separate searches so a location flag does not get mixed up with a music cue.
-- Parallel's objective + query list is closer to how a coordinator actually googles than a single keyword box.
-- If the brief looks like a model dump, nobody in a production office will trust it. The stamp and the paper matter.
+Health check: `GET /api/health`
 
 ## License
 
