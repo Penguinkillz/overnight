@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: overnight
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: PARALLEL_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash

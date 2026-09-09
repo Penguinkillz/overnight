@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #050506;
+  color: #f4f1ea;
+  font-family: Outfit, ui-sans-serif, system-ui, sans-serif;
+}
+
+.field {
+  @apply mt-0.5 w-full border-0 border-b border-black/40 bg-transparent px-0 py-1.5 font-serif text-[15px] text-black outline-none focus:border-black;
+}
+
+.sheet {
+  background: #f3ead8;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+}
+
+.panel {
+  @apply rounded-3xl border border-white/10 bg-white/[0.05] p-6 backdrop-blur-xl;
+}
