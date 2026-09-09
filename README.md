@@ -6,7 +6,9 @@ A production-office agent for the Google Cloud **Agentic Cinema** hackathon. **T
 
 Overnight is a desk a coordinator can use the night before a shoot. You load tomorrow's call sheet. A Gemini agent (Google ADK) runs live Parallel Search queries — location, talent and news, competing productions, and music cues — then writes a one-page brief: **proceed**, **watch**, or **ask legal**, with sources.
 
-![Overnight desk](frontend/public/desk.png)
+![Overnight title page](docs/hero.png)
+
+![Overnight desk](docs/desk.png)
 
 ## The job
 
